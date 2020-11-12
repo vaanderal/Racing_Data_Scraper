@@ -8,7 +8,7 @@ import pandas
 import re
 
 def GetRacingZoneResults(url):
-    print(url)
+    #print(url)
     page = requests.get(url)
     page.content
     soup = BeautifulSoup(page.content, 'lxml')
@@ -66,8 +66,39 @@ def GetRacingZoneResults(url):
     time.sleep(1)
     return(df)
 
+def GetURLS(date):
+    url = 'https://www.racingzone.com.au/results/{}/'.format(date)
+    page = requests.get(url)
+    page.content
+    soup = BeautifulSoup(page.content, 'lxml')
+    #unwanted = soup.find_all('table', {'class':'results-table--international'})
+    #for match in unwanted:
+    #    match.decompose()
+    racelinks = soup.find_all('td', {'class':'popup-race'})
+    #print(tables)
+    for link in racelinks:
+        try:
+            links = link.find('a')
+            href = links['href']
+            fullurl = 'https://www.racingzone.com.au{}'.format(href)
+            #print(fullurl)
+            GetRacingZoneResults(fullurl)
+        except:
+            continue
+
+
+startdatewhole = datetime(2020, 9, 17)
+end_date = datetime(2020, 11, 11)
+delta = timedelta(days=1)
+while startdatewhole <= end_date:
+    startdate = startdatewhole.strftime('%Y-%m-%d')
+    print(startdate)
+    GetURLS(startdate)
+    startdatewhole += delta
+    time.sleep(1)
+
 #Here there is a call to open the text file that contains the URLs of all the results pages. Rename as required
-with open('C:/scratch/racingzone_nonz1.txt', 'r') as txtfile:
-    urllist = txtfile.read().splitlines()
-    for line in urllist:
-        GetRacingZoneResults(line)
+#with open('C:/scratch/racingzone_nonz1.txt', 'r') as txtfile:
+#    urllist = txtfile.read().splitlines()
+#    for line in urllist:
+#        GetRacingZoneResults(line)

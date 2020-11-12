@@ -14,7 +14,6 @@ headers = {
     'cache-control': 'no-cache'
 }
 
-testdate = '2020-09-15'
 
 def GetPuntersResultTimes(date):
     url = 'https://www.punters.com.au/racing-results/{}/'.format(date)
@@ -61,8 +60,8 @@ def GetPuntersResultTimes(date):
 
 
 
-startdatewhole = datetime(2017, 1, 14)
-end_date = datetime(2020, 9, 30)
+startdatewhole = datetime(2020, 10, 1)
+end_date = datetime(2020, 11, 11)
 delta = timedelta(days=1)
 while startdatewhole <= end_date:
     startdate = startdatewhole.strftime('%Y-%m-%d')

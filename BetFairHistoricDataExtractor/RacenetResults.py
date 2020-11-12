@@ -93,9 +93,27 @@ def GetResultsRacenet(url, headers):
         time.sleep(2)
     return
 
-with open('C:/scratch/racenetresults1.csv', 'r') as txtfile:
-    urllist = txtfile.read().splitlines()
-    for line in urllist:
-        print('Getting results {}'.format(line))
-        GetResultsRacenet(line, reqheaders)
-        time.sleep(1)
+def GetRacenetResultURLS(date):
+    url = 'https://www.racenet.com.au/api/results/date/{}'.format(date)
+    test = requests.get(url, headers=headers)
+    soup = BeautifulSoup(test.content, 'lxml')
+    urls = soup.find_all('div', {'class':'table-race-meeting-detail table-race-meeting-detail-ended js-quick-results-popover'})
+    for url in urls:
+        GetResultsRacenet(url, reqheaders)
+
+startdatewhole = datetime(1, 1, 2017)
+end_date = datetime(30, 9, 2020)
+delta = timedelta(days=1)
+while startdatewhole <= end_date:
+    startdate = startdatewhole.strftime('%d-%m-%Y')
+    print(startdate)
+    GetRacenetResultURLS(startdate)
+    startdatewhole += delta
+    time.sleep(5)
+
+#with open('C:/scratch/racenetresults1.csv', 'r') as txtfile:
+#    urllist = txtfile.read().splitlines()
+#    for line in urllist:
+#        print('Getting results {}'.format(line))
+#        GetResultsRacenet(line, reqheaders)
+#        time.sleep(1)
